@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Sys Info App</title>
+        <link rel="stylesheet" href="./bootstrap.min.css"/>
+        
+
+    </head>
+    <body>
+        <div class="container">
+            <h1>Sys Info App</h1>
+            <div id="output"></div>
+        </div>
+    </body>
+
+
+    <script>
+        // ${window.process.version.node}
+        console.log("process", process)
+        console.log("window", window);
+        let output = `
+            <h2 class="page-header">App version data</h2>
+            <ul class="list-group">
+                <li class="list-group-item">
+                    Node: 
+                </li>
+            </ul>
+        `;
+        /*
+        document.onLoad(() => {
+            document.getElementById("output").innerHTML(output);
+        });
+        */
+    </script>
+    <script src="renderer.js"></script>
+</html>

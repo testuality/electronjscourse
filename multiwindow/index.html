@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8"/>
+        <title>Hello world</title>
+        <script>
+            /*
+            const remote = require("electron").remote;
+            const subwindow = remote.require("./subwindow.js");
+
+            function newWin() {
+                console.log("Open new window");
+                subwindow.openWindow();
+            }
+            */
+        </script>
+    </head>
+    <body>
+        <h1>Hello world, main window</h1>
+
+        <p>
+            We are using node <script>document.write(process.versions.node)</script>,
+            Chrome <script>document.write(process.versions.chrome)</script>,
+            and Electron <script>document.write(process.versions.electron)</script>.
+        </p>
+
+        <script>
+            require("./index.js");
+        </script>
+    </body>
+</html>
