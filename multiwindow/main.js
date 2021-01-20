@@ -72,6 +72,25 @@ function getMainMenu() {
 
     menu.append(debugMenu)
 */
+    let openMenuItem = new MenuItem({
+        label: "Open file...",
+        click() {
+            electron.dialog.showOpenDialog(win,
+                {
+                    title: "Open json file",
+                    defaultPath: __dirname,
+                    filters: 
+                    [
+                        { name: 'JSON', extensions: ['json'] }    
+                    ],
+                    properties: ["openFile"],
+                }).then((data) => {
+                    if (!data.canceled) {
+                        console.log(data.filePaths);
+                    }
+                });
+        }
+    })
     let toggleMenuItem = new MenuItem({
         label: "Toggle dev tools",
         click() {
@@ -89,16 +108,17 @@ function getMainMenu() {
         {
             label: 'File',
                 submenu: [
-                {label:'Adjust Notification Value'},
-                {label:'CoinMarketCap'},
-                {type: "separator"},
-                {
-                    label:'Exit', 
-                    click() { 
-                        app.quit() 
-                    } 
-                }
-            ]
+                    openMenuItem,
+                    {label:'Adjust Notification Value'},
+                    {label:'CoinMarketCap'},
+                    {type: "separator"},
+                    {
+                        label:'Exit', 
+                        click() { 
+                            app.quit() 
+                        } 
+                    }
+                ]
         },
         {
             label: "Debug",
