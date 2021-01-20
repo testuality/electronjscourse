@@ -1,4 +1,5 @@
 const electron = require("electron");
+const $ = require("jquery");
 
 // Existe el objeto document
 let button = document.createElement("button");
@@ -9,5 +10,8 @@ button.addEventListener("click", () => {
 });
 document.body.appendChild(button);
 
+$("#toggleAboutMenuBtn").on("click", () => {
+    electron.ipcRenderer.invoke("toggleAboutMenuItem", "Mensaje");
+});
 // Existe el objeto window
 //window.alert("Alerta");

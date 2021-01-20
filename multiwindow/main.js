@@ -1,10 +1,12 @@
 const electron = require("electron");
-const {app, BrowserWindow, BrowserView, ipcMain} = electron;
+const { MenuItem } = require("electron/main");
+const { app, BrowserWindow, BrowserView, ipcMain, Menu} = electron;
 
 const path = require("path");
 const url = require("url");
 
 let win;
+let aboutMenuItem;
 
 function createWindow() {
     win = new BrowserWindow(
@@ -15,16 +17,21 @@ function createWindow() {
             backgroundColor: '#AAAAAA',
             webPreferences: {
                 nodeIntegration: true
-              }
+            }
         }
     );
-    win.loadFile("index.html"); 
+    win.loadFile("index.html");
 
     // Open development tools window
-    win.webContents.openDevTools();
+    //win.webContents.openDevTools();
     win.once('ready-to-show', () => {
         win.show();
-      })
+    });
+
+    let menu = getMainMenu();
+      Menu.setApplicationMenu(null);
+      console.log("Menu", menu);
+      win.setMenu(menu);
 }
 
 exports.openWindow = () => {
@@ -38,11 +45,11 @@ exports.openWindow = () => {
             backgroundColor: '#FFFFFF',
             webPreferences: {
                 nodeIntegration: true
-              }
+            }
         }
     );
-    newWin.setMenu(null);
-    newWin.loadFile("subwindow.html"); 
+    // newWin.setMenu(null);
+    newWin.loadFile("subwindow.html");
     // Open development tools window
     newWin.webContents.openDevTools();
     newWin.once('ready-to-show', () => {
@@ -57,10 +64,91 @@ exports.openWindow = () => {
     */
 }
 
-app.on("ready", createWindow);
+function getMainMenu() {
+    /*
+    let menu = new Menu();
+    let fileMenu = new MenuItem({label: "File"});
+    menu.append(fileMenu);
 
+    menu.append(debugMenu)
+*/
+    let toggleMenuItem = new MenuItem({
+        label: "Toggle dev tools",
+        click() {
+            if (win.webContents.isDevToolsOpened()){
+                win.webContents.closeDevTools();
+            }
+            else {
+                win.webContents.openDevTools();
+            }
+        }
+    });
+    aboutMenuItem = new MenuItem({label: "About..."});
+    
+    let menu = Menu.buildFromTemplate([
+        {
+            label: 'File',
+                submenu: [
+                {label:'Adjust Notification Value'},
+                {label:'CoinMarketCap'},
+                {type: "separator"},
+                {
+                    label:'Exit', 
+                    click() { 
+                        app.quit() 
+                    } 
+                }
+            ]
+        },
+        {
+            label: "Debug",
+                submenu: [toggleMenuItem
+                    /*
+                    {
+                        label: "Toggle dev tools",
+                        click() {
+                            if (win.webContents.isDevToolsOpened()){
+                                win.webContents.closeDevTools();
+                            }
+                            else {
+                                win.webContents.openDevTools();
+                            }
+                        }
+                    }*/
+                ]
+        },
+        {
+            label: "Help",
+            submenu: [
+                aboutMenuItem
+            ]
+        }
+      ]);
+      return menu;
+}
+
+// app.on("ready", createWindow);
+app.whenReady().then(() => {
+    createWindow();
+});
+
+app.on('window-all-closed', () => {
+    if (process.platform !== 'darwin') {
+        app.quit()
+    }
+})
+
+app.on('activate', () => {
+    if (BrowserWindow.getAllWindows().length === 0) {
+        createWindow()
+    }
+})
 
 ipcMain.handle('openSecondWindow', (event, msg) => {
     console.log(msg);
     this.openWindow();
+});
+
+ipcMain.handle("toggleAboutMenuItem", (event, data) => {
+    aboutMenuItem.enabled = !aboutMenuItem.enabled;
 });
